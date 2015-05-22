@@ -7,4 +7,8 @@
     <route id="fp_js_form_validator.check_unique_entity" path="/check_unique_entity">
         <default key="_controller">FpJsFormValidatorBundle:Ajax:checkUniqueEntity</default>
     </route>
+
+    <route id="fp_js_form_validator.check_entity" path="/check_entity">
+        <default key="_controller">FpJsFormValidatorBundle:Ajax:checkEntity</default>
+    </route>
 </routes>

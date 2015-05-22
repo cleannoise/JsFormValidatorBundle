@@ -1,7 +1,12 @@
-if(window.jQuery) {
-    (function($) {
-        $.fn.jsFormValidator = function(method) {
-            if (!method) {
+if (window.jQuery) {
+    (function ($) {
+        $.fn.jsFormValidator = function (method, callback) {
+            if (method && callback && typeof callback === 'function') {
+                var id = $(this).attr('id');
+                if (id) {
+                    FpJsFormValidator.addModelCallback(id, callback);
+                }
+            } else if (!method) {
                 return FpJsFormValidator.customizeMethods.get.apply($.makeArray(this), arguments);
             } else if (typeof method === 'object') {
                 return $(FpJsFormValidator.customizeMethods.init.apply($.makeArray(this), arguments));
