@@ -57,7 +57,7 @@ class AjaxController extends Controller
             return new JsonResponse(false);
         }
 
-        $validator = new EntityPropertyValidator($this->get('validator'));
+        $validator = new EntityPropertyValidator($this->get('validator'), $this->get('property_accessor'));
         foreach ($data['groups'] as $validationGroup) {
             $result = $validator->validate($data['entityName'], $data['data'], $validationGroup);
             if (!$result) {

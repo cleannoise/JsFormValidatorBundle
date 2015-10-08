@@ -1,6 +1,7 @@
 <?php
 namespace Fp\JsFormValidatorBundle\Utils;
 
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Validator\ValidatorInterface;
 
 /**
@@ -15,13 +16,19 @@ class EntityPropertyValidator
      * @var ValidatorInterface
      */
     private $validator;
+    /**
+     * @var PropertyAccessor
+     */
+    private $propertyAccessor;
 
     /**
      * @param ValidatorInterface $validator
+     * @param PropertyAccessor   $propertyAccessor
      */
-    public function __construct(ValidatorInterface $validator)
+    public function __construct(ValidatorInterface $validator, PropertyAccessor $propertyAccessor)
     {
         $this->validator = $validator;
+        $this->propertyAccessor = $propertyAccessor;
     }
 
     /**
@@ -37,8 +44,6 @@ class EntityPropertyValidator
         $constraints = $entityMetadata->findConstraints($validationGroup);
 
         $entityConstraints = [];
-        $errors = [];
-
         foreach ($constraints as $constraint) {
             if (is_array($constraint->fields)) {
                 foreach ($constraint->fields as $field) {
@@ -49,17 +54,12 @@ class EntityPropertyValidator
             }
         }
 
-        foreach ($data as $property => $value) {
-            if (!array_key_exists($property, $entityConstraints)) {
-                continue;
-            }
-
-            $constraint = $entityConstraints[$property];
-            $constraintErrors = $this->validator->validateValue($value, $constraint, $validationGroup);
-            foreach ($constraintErrors as $error) {
-                $errors[] = $error;
-            }
+        $entity = new $entityClass;
+        foreach ($data as $propertyName => $propertyValue) {
+            $this->propertyAccessor->setValue($entity, $propertyName, $propertyValue);
         }
+
+        $errors = $this->validator->validateValue($entity, $entityConstraints, $validationGroup);
 
         return count($errors) === 0;
     }
