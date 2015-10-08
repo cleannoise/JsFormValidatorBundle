@@ -881,7 +881,6 @@ function FpJsFormValidatorBundleFormConstraintUniqueEntity() {
      * @param {FpJsFormElement} element
      */
     this.validate = function (value, element) {
-        console.log(value, element);
         var self = this;
         var route = null;
         var config = FpJsFormValidator.config;
