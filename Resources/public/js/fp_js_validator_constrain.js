@@ -874,12 +874,14 @@ function FpJsFormValidatorBundleFormConstraintUniqueEntity() {
     this.ignoreNull = true;
     this.entityName = null;
     this.groups = [];
+    this.fieldsValue = [];
 
     /**
      * @param {*} value
      * @param {FpJsFormElement} element
      */
     this.validate = function (value, element) {
+        console.log(value, element);
         var self = this;
         var route = null;
         var config = FpJsFormValidator.config;
@@ -896,6 +898,11 @@ function FpJsFormValidatorBundleFormConstraintUniqueEntity() {
         if (this.ignoreNull && this.isEmpty(element, this.fields)) {
             return [];
         }
+        var fieldValues = this.getValues(element, this.fields);
+        if (JSON.stringify(this.fieldsValue) === JSON.stringify(fieldValues)) {
+            return [];
+        }
+        this.fieldsValue = fieldValues;
 
         FpJsFormValidator.ajax.sendRequest(
             route,
@@ -909,7 +916,7 @@ function FpJsFormValidatorBundleFormConstraintUniqueEntity() {
                 ignoreNull: this.ignoreNull ? 1 : 0,
                 groups: this.groups,
                 entityName: this.entityName,
-                data: this.getValues(element, this.fields)
+                data: this.fieldsValue
             },
             function (response) {
                 response = JSON.parse(response);
