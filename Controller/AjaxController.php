@@ -2,6 +2,7 @@
 
 namespace Fp\JsFormValidatorBundle\Controller;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,21 +26,26 @@ class AjaxController extends Controller
     public function checkUniqueEntityAction(Request $request)
     {
         $data = $request->request->all();
-        foreach ($data['data'] as $value) {
-            // If field(s) has an empty value and it should be ignored
-            if ((bool) $data['ignoreNull'] && ('' === $value || is_null($value))) {
-                // Just return a positive result
-                return new JsonResponse(true);
+        try {
+            $entity = new $data['entityName'];
+            $propertyAccessor = $this->get('property_accessor');
+            foreach ($data['data'] as $entityDataKey => $entityDataValue) {
+                $propertyAccessor->setValue($entity, $entityDataKey, $entityDataValue);
             }
+
+            $constrainOptions = [];
+            foreach (['fields', 'message', 'repositoryMethod', 'service', 'ignoreNull', 'groups'] as $propertyName) {
+                if (array_key_exists($propertyName, $data)) {
+                    $constrainOptions[$propertyName] = $data[$propertyName];
+                }
+            }
+            $constrain = new UniqueEntity($constrainOptions);
+            $result = empty($this->get('validator')->validate($entity, [$constrain], $data['groups']));
+        } catch (\Exception $e) {
+            $result = false;
         }
 
-        $entity = $this
-            ->get('doctrine')
-            ->getRepository($data['entityName'])
-            ->{$data['repositoryMethod']}($data['data'])
-        ;
-
-        return new JsonResponse(empty($entity));
+        return new JsonResponse($result);
     }
 
     /**
