@@ -5,8 +5,8 @@ function SymfonyComponentSecurityCoreValidatorConstraintsUserPassword() {
 
     this.validate = function (value, element) {
         var self = this,
-            elementNode = $('#'+element.id),
-            route = elementNode.data('ajax-validate-route');
+            elementNode = document.getElementById(element.id),
+            route = elementNode.getAttribute('ajax-validate-route');
 
         if (!route) {
             return [];
@@ -16,7 +16,7 @@ function SymfonyComponentSecurityCoreValidatorConstraintsUserPassword() {
             route,
             {
                 message: this.message,
-                data: { value: elementNode.val() }
+                data: { value: elementNode.value }
             },
             function (response) {
                 response = JSON.parse(response);

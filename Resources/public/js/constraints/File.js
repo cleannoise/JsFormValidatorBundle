@@ -27,10 +27,7 @@ function SymfonyComponentValidatorConstraintsFile() {
         return (
             typeof(this.mimeTypes) === 'object'
             && this.mimeTypes.length > 0
-            && (
-                $.inArray(mimeType, this.mimeTypes) === false
-                || $.inArray(mimeType, this.mimeTypes) < 0
-            )
+            && this.mimeTypes.indexOf(mimeType) < 0
         );
     };
 

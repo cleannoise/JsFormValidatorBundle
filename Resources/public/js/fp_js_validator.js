@@ -92,6 +92,7 @@ function FpJsFormElement() {
             }
             return;
         }
+
         if (!ul) {
             var $thisEl = $(document.getElementById(domNode.getAttribute('id')));
             ul = document.createElement('ul');
@@ -813,16 +814,20 @@ var FpJsFormValidator = new function () {
      * @returns {Node}
      */
     this.getDefaultErrorContainerNode = function (htmlElement) {
-        var $el = $(htmlElement);
-        if ($(htmlElement).attr('id')) {
-            $el = $('#' + $(htmlElement).attr('id'));
+        var ul = null;
+        var ulContainer = document.getElementById('form-errors-' + htmlElement.getAttribute('id'));
+        if (ulContainer && ulContainer.childElementCount > 0 && ulContainer.firstElementChild.tagName.toUpperCase() === 'UL') {
+            ul = ulContainer.firstElementChild;
         }
-        var ul = $el.closest('.form-group').find('ul.form-errors');
-        if (!ul || !$(ul).hasClass(this.errorClass)) {
-            return null;
-        } else {
-            return $(ul).get(0);
+        if (!ul && window.jQuery) {
+            var $el = $(htmlElement);
+            var ul = $el.closest('.form-group').find('ul.' + this.errorClass);
+            if (ul) {
+                return $(ul).get(0);
+            }
         }
+
+        return ul;
     };
 
     /**
@@ -868,7 +873,7 @@ var FpJsFormValidator = new function () {
         } else if (this.customizeMethods[method]) {
             return this.customizeMethods[method].apply(items, Array.prototype.slice.call(arguments, 2));
         } else {
-            $.error('Method ' + method + ' does not exist');
+            console.error('Method ' + method + ' does not exist');
             return this;
         }
     };

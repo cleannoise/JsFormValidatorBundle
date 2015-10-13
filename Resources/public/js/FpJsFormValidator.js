@@ -841,7 +841,7 @@ var FpJsFormValidator = new function () {
         } else if (this.customizeMethods[method]) {
             return this.customizeMethods[method].apply(items, Array.prototype.slice.call(arguments, 2));
         } else {
-            $.error('Method ' + method + ' does not exist');
+            console.error('Method ' + method + ' does not exist');
             return this;
         }
     };

@@ -40,7 +40,7 @@ class AjaxController extends Controller
                 }
             }
             $constrain = new UniqueEntity($constrainOptions);
-            $result = empty($this->get('validator')->validate($entity, [$constrain], $data['groups']));
+            $result = $this->get('validator')->validate($entity, [$constrain], $data['groups'])->count() === 0;
         } catch (\Exception $e) {
             $result = false;
         }
