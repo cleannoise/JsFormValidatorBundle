@@ -240,12 +240,13 @@ function FpJsCustomizeMethods() {
             if (validateUnique && item.jsFormValidator.parent) {
                 var data = item.jsFormValidator.parent.data;
                 if (data['entity'] && data['entity']['constraints']) {
+                    var dataEntityGroups = item.jsFormValidator.parent.groups();
                     for (var i in data['entity']['constraints']) {
                         var constraint = data['entity']['constraints'][i];
                         constraintGroups = [];
                         for (var j in constraint.groups) {
                             var group = constraint.groups[j];
-                            if (-1 !== data['entity']['groups'].indexOf(group)) {
+                            if (-1 !== dataEntityGroups.indexOf(group)) {
                                 constraintGroups.push(group)
                             }
                         }
