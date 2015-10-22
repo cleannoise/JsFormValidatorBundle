@@ -817,8 +817,14 @@ var FpJsFormValidator = new function () {
     this.getDefaultErrorContainerNode = function (htmlElement) {
         var ul = null;
         var ulContainer = document.getElementById('form-errors-' + htmlElement.getAttribute('id'));
-        if (ulContainer && ulContainer.childElementCount > 0 && ulContainer.firstElementChild.tagName.toUpperCase() === 'UL') {
-            ul = ulContainer.firstElementChild;
+        if (ulContainer) {
+            if (ulContainer.childElementCount > 0 && ulContainer.firstElementChild.tagName.toUpperCase() === 'UL') {
+                ul = ulContainer.firstElementChild;
+            } else{
+                ul = document.createElement('ul');
+                ul.className = FpJsFormValidator.errorClass;
+                ulContainer.appendChild(ul);
+            }
         }
         if (!ul && window.jQuery) {
             var $el = $(htmlElement);
