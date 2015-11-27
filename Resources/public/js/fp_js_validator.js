@@ -240,7 +240,7 @@ function FpJsCustomizeMethods() {
             if (validateUnique && item.jsFormValidator.parent) {
                 var data = item.jsFormValidator.parent.data;
                 if (data['entity'] && data['entity']['constraints']) {
-                    var dataEntityGroups = item.jsFormValidator.parent.groups();
+                    var dataEntityGroups = data['entity']['groups'];
                     for (var i in data['entity']['constraints']) {
                         var constraint = data['entity']['constraints'][i];
                         constraintGroups = [];
@@ -250,7 +250,7 @@ function FpJsCustomizeMethods() {
                                 constraintGroups.push(group)
                             }
                         }
-                        if (constraint instanceof FpJsFormValidatorBundleFormConstraintUniqueEntity && constraint.fields.indexOf(item.name)) {
+                        if (constraint instanceof FpJsFormValidatorBundleFormConstraintUniqueEntity && constraint.fields.indexOf(item.jsFormValidator.name) > -1) {
                             var owner = item.jsFormValidator.parent;
                             if (constraintGroups.length === 0) {
                                 continue;
