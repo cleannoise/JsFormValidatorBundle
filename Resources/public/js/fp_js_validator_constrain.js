@@ -328,7 +328,7 @@ function SymfonyComponentValidatorConstraintsEqualTo() {
  * @constructor
  * @author dev.ymalcev@gmail.com
  */
-function SymfonyComponentValidatorConstraintsFalse() {
+function SymfonyComponentValidatorConstraintsIsFalse() {
     this.message = '';
 
     this.validate = function (value) {
@@ -636,7 +636,7 @@ function SymfonyComponentValidatorConstraintsNotNull() {
  * @constructor
  * @author dev.ymalcev@gmail.com
  */
-function SymfonyComponentValidatorConstraintsNull() {
+function SymfonyComponentValidatorConstraintsIsNull() {
     this.message = '';
 
     this.validate = function (value) {
@@ -755,7 +755,7 @@ function SymfonyComponentValidatorConstraintsTime() {
  * @constructor
  * @author dev.ymalcev@gmail.com
  */
-function SymfonyComponentValidatorConstraintsTrue() {
+function SymfonyComponentValidatorConstraintsIsTrue() {
     this.message = '';
 
     this.validate = function (value) {
@@ -939,11 +939,23 @@ function FpJsFormValidatorBundleFormConstraintUniqueEntity() {
         }
     };
 
+    this.getElementValue = function(element, field) {
+        var config = FpJsFormValidator.config;
+        var customValues = (config[element.id] && config[element.id]['custom_values']) ? config[element.id]['custom_values'] : {};
+        if (customValues[field]) {
+            return customValues[field];
+        }
+
+        return element.children[field]
+            ? FpJsFormValidator.getElementValue(element.children[field])
+            : null;
+    };
+
     this.isEmpty = function (element, fields) {
         var result = false;
         var value;
         for (var i = 0; i < fields.length; i++) {
-            value = FpJsFormValidator.getElementValue(element.children[this.fields[i]]);
+            value = this.getElementValue(element, fields[i]);
             result = result || !value;
         }
 
@@ -959,7 +971,7 @@ function FpJsFormValidatorBundleFormConstraintUniqueEntity() {
         var value;
         var result = {};
         for (var i = 0; i < fields.length; i++) {
-            value = FpJsFormValidator.getElementValue(element.children[this.fields[i]]);
+            value = this.getElementValue(element, fields[i]);
             value = value ? value : '';
             result[fields[i]] = value;
         }
@@ -973,11 +985,13 @@ function FpJsFormValidatorBundleFormConstraintUniqueEntity() {
      */
     this.getErrorPathElement = function (element) {
         var errorPath = this.fields[0];
-        if (this.errorPath) {
-            errorPath = this.errorPath;
+        for (var i = 0; i < this.fields.length; i++) {
+            if (element.children[this.fields[i]]) {
+                return element.children[this.fields[i]];
+            }
         }
 
-        return element.children[errorPath];
+        return element;
     }
 }
 
