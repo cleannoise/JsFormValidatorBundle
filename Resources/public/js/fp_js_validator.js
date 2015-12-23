@@ -303,15 +303,16 @@ function FpJsCustomizeMethods() {
                     if (FpJsFormValidator.modelCallbacks[element.id] && typeof FpJsFormValidator.modelCallbacks[element.id].fireWith === 'function') {
                         FpJsFormValidator.modelCallbacks[element.id].fireWith(item, [event]);
                     } else {
-                        var submitEl = $(event.explicitOriginalTarget);
-                        if (submitEl.attr('type') == 'submit') {
+                        if (FpJsFormValidator.submitButton) {
+                            var $submitButton = $(FpJsFormValidator.submitButton);
                             $('<input />')
                                 .attr('type', 'hidden')
-                                .attr('name', submitEl.attr('name'))
+                                .attr('name', $submitButton.attr('name'))
                                 .attr('value', '1')
                                 .appendTo(item);
                         }
                         item.submit();
+                        FpJsFormValidator.submitButton = null;
                     }
                 }
             }
@@ -373,6 +374,7 @@ var FpJsBaseConstraint = {
 };
 
 var FpJsFormValidator = new function () {
+    this.submitButton = null;
     this.forms = {};
     this.errorClass = 'form-errors';
     this.config = {};
@@ -737,6 +739,10 @@ var FpJsFormValidator = new function () {
         });
         $(form).find(':input').not('button').on('blur', function () {
             $(this).jsFormValidator('validate');
+        });
+        var self = this;
+        $(document).on('click', 'button[type=submit]', function() {
+            self.submitButton = $(this).get();
         });
     };
 
