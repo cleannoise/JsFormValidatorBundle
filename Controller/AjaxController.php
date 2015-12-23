@@ -2,6 +2,7 @@
 
 namespace Fp\JsFormValidatorBundle\Controller;
 
+use Doctrine\Common\Util\ClassUtils;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,6 +27,45 @@ class AjaxController extends Controller
     public function checkUniqueEntityAction(Request $request)
     {
         $data = $request->request->all();
+        $result = $request->get('checkFromValidator')
+            ? $this->validateFromValidator($data)
+            : $this->validateFromDB($data);
+
+        return new JsonResponse($result);
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    private function validateFromDB(array $data)
+    {
+        foreach ($data['data'] as $value) {
+            // If field(s) has an empty value and it should be ignored
+            if ((bool) $data['ignoreNull'] && ('' === $value || is_null($value))) {
+                return true;
+            }
+        }
+        $entities = $this->getDoctrine()->getRepository($data['entityName'])->{$data['repositoryMethod']}($data['data']);
+        $result = empty($entities);
+        if (!$result && isset($data['idValues']) && is_array($data['idValues']) && count($entities) === 1) {
+            $entity = $entities[0];
+            $em = $this->getDoctrine()->getManager();
+            $idsValues = $em->getClassMetadata(ClassUtils::getClass($entity))->getIdentifierValues($entity);
+            $result = count(array_intersect_assoc($idsValues, $data['idValues'])) === count($idsValues);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    private function validateFromValidator(array $data)
+    {
         try {
             $entity = new $data['entityName'];
             $propertyAccessor = $this->get('property_accessor');
@@ -45,7 +85,7 @@ class AjaxController extends Controller
             $result = false;
         }
 
-        return new JsonResponse($result);
+        return $result;
     }
 
     /**

@@ -875,6 +875,8 @@ function FpJsFormValidatorBundleFormConstraintUniqueEntity() {
     this.entityName = null;
     this.groups = [];
     this.fieldsValue = [];
+    this.checkFromValidator = false;
+    this.idFields = ['id'];
 
     /**
      * @param {*} value
@@ -913,6 +915,8 @@ function FpJsFormValidatorBundleFormConstraintUniqueEntity() {
                 em:               this.em,
                 repositoryMethod: this.repositoryMethod,
                 ignoreNull: this.ignoreNull ? 1 : 0,
+                checkFromValidator: this.checkFromValidator ? 1 : 0,
+                idValues: this.idFields ? this.getValues(element, this.idFields) : null,
                 groups: this.groups,
                 entityName: this.entityName,
                 data: this.fieldsValue
