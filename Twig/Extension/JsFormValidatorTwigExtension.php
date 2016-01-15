@@ -1,5 +1,4 @@
 <?php
-
 namespace Fp\JsFormValidatorBundle\Twig\Extension;
 
 use Fp\JsFormValidatorBundle\Factory\JsFormValidatorFactory;
@@ -12,30 +11,10 @@ use Symfony\Component\Form\FormView;
  */
 class JsFormValidatorTwigExtension extends \Twig_Extension
 {
-    /** @var  \Twig_Environment */
-    protected $env;
-
-    /**
-     * @param \Twig_Environment $environment
-     */
-    public function initRuntime(\Twig_Environment $environment)
-    {
-        $this->env = $environment;
-    }
-
     /**
      * @var JsFormValidatorFactory
      */
     protected $factory;
-
-    /**
-     * @return JsFormValidatorFactory
-     * @codeCoverageIgnore
-     */
-    protected function getFactory()
-    {
-        return $this->factory;
-    }
 
     /**
      * @param JsFormValidatorFactory $factory
@@ -52,15 +31,18 @@ class JsFormValidatorTwigExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
-            'init_js_validation'  => new \Twig_Function_Method($this, 'getJsValidator', array('is_safe' => array('html'))),
-            'js_validator_config' => new \Twig_Function_Method($this, 'getConfig', array('is_safe' => array('html'))),
-        );
+        return [
+            new \Twig_SimpleFunction('init_js_validation', [$this, 'getJsValidator'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('js_validator_config', [$this, 'getConfig'], ['is_safe' => ['html']]),
+        ];
     }
 
+    /**
+     * @return string
+     */
     public function getConfig()
     {
-        return $this->getFactory()->getJsConfigString();
+        return $this->factory->getJsConfigString();
     }
 
     /**
@@ -75,7 +57,7 @@ class JsFormValidatorTwigExtension extends \Twig_Extension
         if ($form instanceof FormView) {
             $form = $form->vars['name'];
         }
-        $jsModels = $this->getFactory()->getJsValidatorString($form, $onLoad);
+        $jsModels = $this->factory->getJsValidatorString($form, $onLoad);
         if ($wrapped) {
             $jsModels = '<script type="text/javascript">' . $jsModels . '</script>';
         }

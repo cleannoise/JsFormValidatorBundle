@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\GetterMetadata;
 use Symfony\Component\Validator\Mapping\PropertyMetadata;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * This factory uses to parse a form to a tree of JsFormElement's
@@ -29,32 +29,26 @@ class JsFormValidatorFactory
      * @var ValidatorInterface
      */
     protected $validator;
-
     /**
      * @var TranslatorInterface
      */
     protected $translator;
-
     /**
      * @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface
      */
     protected $router;
-
     /**
      * @var array
      */
     protected $config = array();
-
     /**
      * @var Form[]
      */
     protected $queue = array();
-
     /**
      * @var Form
      */
     protected $currentElement = null;
-
     /**
      * @var string
      */
@@ -91,7 +85,7 @@ class JsFormValidatorFactory
      */
     protected function getMetadataFor($className)
     {
-        return $this->validator->getMetadataFactory()->getMetadataFor($className);
+        return $this->validator->getMetadataFor($className);
     }
 
     /**
@@ -315,8 +309,8 @@ class JsFormValidatorFactory
         $parent = $form->getParent();
         if ($parent && null !== $parent->getConfig()->getDataClass()) {
             $classMetadata = $metadata = $this->getMetadataFor($parent->getConfig()->getDataClass());
-            if ($classMetadata->hasMemberMetadatas($form->getName())) {
-                $metadata = $classMetadata->getMemberMetadatas($form->getName());
+            if ($classMetadata->hasPropertyMetadata($form->getName())) {
+                $metadata = $classMetadata->getPropertyMetadata($form->getName());
                 /** @var PropertyMetadata $item */
                 foreach ($metadata as $item) {
                     $this->composeValidationData(

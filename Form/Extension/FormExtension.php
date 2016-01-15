@@ -5,7 +5,7 @@ use Fp\JsFormValidatorBundle\Factory\JsFormValidatorFactory;
 use Fp\JsFormValidatorBundle\Form\Subscriber\SubscriberToQueue;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class FormExtension
@@ -37,11 +37,11 @@ class FormExtension extends AbstractTypeExtension
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('js_validation' => true));
+        $resolver->setDefaults(['js_validation' => true]);
     }
 
     /**

@@ -2,7 +2,7 @@
 namespace Fp\JsFormValidatorBundle\Utils;
 
 use Symfony\Component\PropertyAccess\PropertyAccessor;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class EntityPropertyValidator
@@ -40,7 +40,7 @@ class EntityPropertyValidator
      */
     public function validate($entityClass, $data, $validationGroup)
     {
-        $entityMetadata = $this->validator->getMetadataFactory()->getMetadataFor($entityClass);
+        $entityMetadata = $this->validator->getMetadataFor($entityClass);
         $constraints = $entityMetadata->findConstraints($validationGroup);
 
         $entityConstraints = [];
@@ -59,7 +59,7 @@ class EntityPropertyValidator
             $this->propertyAccessor->setValue($entity, $propertyName, $propertyValue);
         }
 
-        $errors = $this->validator->validateValue($entity, $entityConstraints, $validationGroup);
+        $errors = $this->validator->validate($entity, $entityConstraints, $validationGroup);
 
         return count($errors) === 0;
     }
