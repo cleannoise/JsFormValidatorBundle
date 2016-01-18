@@ -236,7 +236,7 @@ class JsFormValidatorFactory
         $model                 = new JsFormElement;
         $model->id             = $this->getElementId($form);
         $model->name           = $form->getName();
-        $model->type           = $conf->getType()->getInnerType()->getName();
+        $model->type           = $conf->getType()->getInnerType()->getBlockPrefix();
         $model->invalidMessage = $this->translateMessage(
             $conf->getOption('invalid_message'),
             $conf->getOption('invalid_message_parameters')
@@ -439,7 +439,7 @@ class JsFormValidatorFactory
     protected function isProcessableElement($element)
     {
         return ($element instanceof Form)
-        && ('hidden' !== $element->getConfig()->getType()->getName());
+        && ('hidden' !== $element->getConfig()->getType()->getBlockPrefix());
     }
 
     /**
