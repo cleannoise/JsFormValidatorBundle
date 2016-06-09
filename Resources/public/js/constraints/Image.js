@@ -19,8 +19,5 @@ function SymfonyComponentValidatorConstraintsImage() {
             }
         }
     }
-    this.onCreate = function () {
-
-    }
 }
 SymfonyComponentValidatorConstraintsImage.prototype = new SymfonyComponentValidatorConstraintsFile;

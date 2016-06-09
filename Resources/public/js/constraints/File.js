@@ -36,7 +36,7 @@ function SymfonyComponentValidatorConstraintsFile() {
             this.maxSizeMessage = FpJsBaseConstraint.prepareMessage(this.maxSizeMessage, {'{{ limit }}': this.sizeToSuffixBytes(this.maxSize), ' {{ suffix }}': ''}, this.maxSize);
             this.maxSizeBytes = this.sizeToBytes(this.maxSize);
         }
-        if (this.mimeTypes) {
+        if (this.mimeTypes && typeof this.mimeTypes == 'object') {
             this.mimeTypesMessage = FpJsBaseConstraint.prepareMessage(this.mimeTypesMessage, {'{{ types }}': this.mimeTypes.join()}, this.mimeTypes);
         }
     };
