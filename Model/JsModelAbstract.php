@@ -2,6 +2,8 @@
 
 namespace Fp\JsFormValidatorBundle\Model;
 
+use Symfony\Component\Validator\Constraints\File;
+
 /**
  * All the models inherited from this class converted to a similar Javascript model by printing them as a string
  *
@@ -52,7 +54,7 @@ abstract class JsModelAbstract
 
             /** Because maxSize is a protected prop and won't be serialized  */
 
-            if ($value instanceof Symfony\Component\Validator\Constraints\File && $value->maxSize) {
+            if ($value instanceof File && $value->maxSize) {
                 $jsObject[] = "'maxSize':" . self::phpValueToJs($value->maxSize);
             }
 
