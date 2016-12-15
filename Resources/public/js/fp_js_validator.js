@@ -93,7 +93,7 @@ function FpJsFormElement() {
             return;
         }
 
-        if (!ul) {
+        if (!ul && window.jQuery) {
             var $thisEl = $(document.getElementById(domNode.getAttribute('id')));
             ul = document.createElement('ul');
             ul.className = FpJsFormValidator.errorClass;
@@ -303,7 +303,7 @@ function FpJsCustomizeMethods() {
                     if (FpJsFormValidator.modelCallbacks[element.id] && typeof FpJsFormValidator.modelCallbacks[element.id].fireWith === 'function') {
                         FpJsFormValidator.modelCallbacks[element.id].fireWith(item, [event]);
                     } else {
-                        if (FpJsFormValidator.submitButton) {
+                        if (FpJsFormValidator.submitButton && window.jQuery) {
                             var $submitButton = $(FpJsFormValidator.submitButton);
                             $('<input />')
                                 .attr('type', 'hidden')
@@ -737,13 +737,12 @@ var FpJsFormValidator = new function () {
         form.addEventListener('submit', function (event) {
             FpJsFormValidator.customize(form, 'submitForm', event);
         });
-        $(form).find(':input').not('button').on('blur', function () {
-            $(this).jsFormValidator('validate');
-        });
         var self = this;
-        $(document).on('click', 'button[type=submit]', function() {
-            self.submitButton = $(this).get();
-        });
+        if (window.jQuery) {
+            $(document).on('click', 'button[type=submit]', function() {
+                self.submitButton = $(this).get();
+            });
+        }
     };
 
     /**
